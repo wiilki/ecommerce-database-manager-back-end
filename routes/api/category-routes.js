@@ -16,14 +16,14 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   // find one category by its `id` value
   try {
-    const seedCategories = await Category.findByPk(req.params.id, { include: [{ model: Product }] });
+    const seedCategory = await Category.findByPk(req.params.id, { include: [{ model: Product }] });
 
-    if (!seedCategories) {
+    if (!seedCategory) {
       res.status(404).json({ message: 'No category found with that id!' });
       return;
-    }
+    };
 
-    res.status(200).json(seedCategories);
+    res.status(200).json(seedCategory);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -62,14 +62,14 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   // delete a category by its `id` value
   try {
-    const seedCategories = await Category.destroy({ where: { id: req.params.id } });
+    const deleteCategory = await Category.destroy({ where: { id: req.params.id } });
 
-    if (!seedCategories) {
+    if (!deleteCategory) {
       res.status(404).json({ message: 'No category found with that id!' });
       return;
     }
 
-    res.status(200).json(seedCategories);
+    res.status(200).json(deleteCategory);
   } catch (err) {
     res.status(500).json(err);
   }
