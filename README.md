@@ -26,10 +26,10 @@
 * [Mysql2](https://www.npmjs.com/package/mysql2)
 * [Sequalize](https://sequelize.org/)
 
-  ## Tests 
+## Tests 
 
-    https://drive.google.com/file/d/1DSykMWSjtlAy_5QbB3Ogz-Hi1Dw_OcRM/view?usp=sharing
-  
-  ## Questions
-  
-  Have questions? [Email Me!](mailto:thewillkim@icloud.com)
+  https://drive.google.com/file/d/1DSykMWSjtlAy_5QbB3Ogz-Hi1Dw_OcRM/view?usp=sharing
+
+## Questions
+
+Have questions? [Email Me!](mailto:thewillkim@icloud.com)
