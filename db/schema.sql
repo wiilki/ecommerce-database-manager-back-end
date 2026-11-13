@@ -1,6 +1,2 @@
--- DROP DATABASE
-DROP DATABASE IF EXISTS ecommerce_db;
-
--- CREATE DATABASE
-CREATE DATABASE ecommerce_db;
-
+-- Safe setup: never drop an existing database.
+CREATE DATABASE IF NOT EXISTS ecommerce_db;
