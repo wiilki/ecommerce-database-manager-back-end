@@ -2,26 +2,25 @@ const seedCategories = require('./category-seeds');
 const seedProducts = require('./product-seeds');
 const seedTags = require('./tag-seeds');
 const seedProductTags = require('./product-tag-seeds');
-
 const sequelize = require('../config/connection');
+require('../models');
 
-const seedAll = async () => {
+async function seedAll() {
+  // Deliberately destructive: seed resets existing tables. Never run on production data.
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('Refusing to reset production data.');
+  }
   await sequelize.sync({ force: true });
-  console.log('\n----- DATABASE SYNCED -----\n');
-  
   await seedCategories();
-  console.log('\n----- CATEGORIES SEEDED -----\n');
-
   await seedProducts();
-  console.log('\n----- PRODUCTS SEEDED -----\n');
-
   await seedTags();
-  console.log('\n----- TAGS SEEDED -----\n');
-
   await seedProductTags();
-  console.log('\n----- PRODUCT TAGS SEEDED -----\n');
+  console.log('Sample inventory seeded successfully.');
+}
 
-  process.exit(0);
-};
-
-seedAll();
+seedAll()
+  .catch((error) => {
+    console.error('Seed failed:', error.message);
+    process.exitCode = 1;
+  })
+  .finally(() => sequelize.close());

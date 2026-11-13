@@ -1,10 +1,19 @@
 const router = require('express').Router();
-const categoryRoutes = require('./category-routes');
-const productRoutes = require('./product-routes');
-const tagRoutes = require('./tag-routes');
+const sequelize = require('../../config/connection');
+const { asyncRoute, adminWriteGuard } = require('../../utils/http');
 
-router.use('/categories', categoryRoutes);
-router.use('/products', productRoutes);
-router.use('/tags', tagRoutes);
+router.get('/health', asyncRoute(async (req, res) => {
+  try {
+    await sequelize.authenticate();
+    res.json({ status: 'ok', service: 'inventory-manager' });
+  } catch (error) {
+    res.status(503).json({ status: 'unavailable', service: 'inventory-manager' });
+  }
+}));
+
+router.use(adminWriteGuard);
+router.use('/categories', require('./category-routes'));
+router.use('/products', require('./product-routes'));
+router.use('/tags', require('./tag-routes'));
 
 module.exports = router;

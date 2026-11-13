@@ -1,24 +1,20 @@
 {
-  "name": "module-13-challenge-orm",
-  "version": "1.0.0",
-  "description": "",
+  "name": "ecommerce-inventory-manager",
+  "version": "2.0.0",
+  "private": true,
+  "description": "E-commerce inventory CRUD API and responsive administration dashboard",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
+    "dev": "nodemon server.js",
     "watch": "nodemon server.js",
-    "seed": "node seeds/index.js"
+    "seed": "node seeds/index.js",
+    "test": "node --test tests/*.test.js",
+    "check": "node --check server.js && node --check routes/api/product-routes.js && npm test"
   },
-  "repository": {
-    "type": "git",
-    "url": "git@work.github.com:coding-boot-camp/module-13-challenge-orm.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "nodemon": "^2.0.3"
-  },
+  "engines": { "node": ">=18" },
+  "license": "MIT",
+  "devDependencies": { "nodemon": "^2.0.3" },
   "dependencies": {
     "dotenv": "^8.2.0",
     "express": "^4.17.1",

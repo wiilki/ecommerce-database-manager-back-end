@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#11192d">
+  <title>Stockroom | Inventory Manager</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script defer src="/app.js"></script>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <a href="/" class="brand"><span class="logo">S</span><span><strong>stockroom<span class="dot">.</span></strong><small>COMMERCE OS</small></span></a>
+    <div class="workspace"><span class="workspace-icon">W</span><span><b>My workspace</b><small>Inventory management</small></span><span class="chevron">⌄</span></div>
+    <div class="nav-heading">WORKSPACE</div>
+    <nav aria-label="Main navigation">
+      <button type="button" class="nav active" data-view="products"><span>▦</span> Products <small id="navProductCount">0</small></button>
+      <button type="button" class="nav" data-view="categories"><span>◫</span> Categories</button>
+      <button type="button" class="nav" data-view="tags"><span>◇</span> Tags</button>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="tip"><span>✦</span><strong>Your inventory, organized.</strong><p>Keep your catalog, stock levels and product details in one beautiful workspace.</p></div>
+      <div class="profile"><span>IM</span><div><strong>Inventory Manager</strong><small>Administration</small></div></div>
+    </div>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="crumb">Workspace <span>/</span> <strong id="crumb">Products</strong></div>
+      <div class="top-actions">
+        <div class="connection"><i id="statusDot"></i><span id="connectionText">Connecting</span></div>
+        <button type="button" id="refresh" class="refresh" title="Refresh" aria-label="Refresh data">↻</button>
+        <label class="key"><span>⚿</span><input id="adminKey" type="password" autocomplete="off" placeholder="Admin key" aria-label="Admin API key"></label>
+      </div>
+    </header>
+    <main class="content">
+      <div class="page-header"><div><span class="eyebrow">YOUR WORKSPACE / <span id="kicker">PRODUCTS</span></span><h1 id="title">Products</h1><p id="subtitle">A clear view of everything in your catalog.</p></div><button type="button" id="add" class="primary">＋ <span id="addLabel">Add product</span></button></div>
+      <section class="metrics" id="metrics">
+        <div class="metric"><div><span>Total products</span><em class="purple">▦</em></div><strong id="metricProducts">—</strong><small>Items in your catalog</small></div>
+        <div class="metric"><div><span>Inventory value</span><em class="mint">$</em></div><strong id="metricValue">—</strong><small>Based on current stock</small></div>
+        <div class="metric"><div><span>Low stock items</span><em class="peach">↘</em></div><strong id="metricLow">—</strong><small>10 units or fewer</small></div>
+        <div class="metric"><div><span>Categories</span><em class="sky">◫</em></div><strong id="metricCategories">—</strong><small>Catalog collections</small></div>
+      </section>
+      <section class="catalog">
+        <div class="catalog-head"><div><h2 id="catalogTitle">Product catalog</h2><p id="catalogSubtitle">Manage and update your inventory in one place.</p></div><span class="count" id="resultCount">0 items</span></div>
+        <div class="toolbar"><label class="search"><span>⌕</span><input id="search" type="search" placeholder="Search products..." aria-label="Search inventory"></label><div id="filters" class="filters"><select id="categoryFilter" aria-label="Category filter"><option value="all">All categories</option></select><select id="stockFilter" aria-label="Stock filter"><option value="all">All stock</option><option value="low">Low stock (≤10)</option><option value="out">Out of stock</option><option value="in">In stock</option></select></div></div>
+        <div class="scroll-table" id="productTable"><table><thead><tr><th>PRODUCT</th><th>CATEGORY</th><th>PRICE</th><th>STOCK</th><th>TAGS</th><th class="right">ACTIONS</th></tr></thead><tbody id="productRows"></tbody></table></div>
+        <div id="tiles" class="tiles hidden"></div>
+        <div class="empty hidden" id="empty"><div>▦</div><h3 id="emptyHeading">Nothing here yet</h3><p id="emptyText">Add your first item to get started.</p><button type="button" id="emptyAdd" class="secondary">Create new</button></div>
+      </section>
+      <footer><span>STOCKROOM · INVENTORY MANAGER</span><span>Made for a more organized workspace</span></footer>
+    </main>
+  </div>
+</div>
+<dialog id="editor">
+  <form id="editorForm">
+    <div class="modal-head"><div><span class="eyebrow">INVENTORY MANAGER</span><h2 id="editorTitle">Add product</h2><p>Fill in the details below.</p></div><button type="button" id="close" class="close" aria-label="Close">×</button></div>
+    <div id="productInputs" class="inputs">
+      <label>Product name <b>*</b><input id="productName" type="text" maxlength="255" placeholder="e.g. Everyday Canvas Tote" required></label>
+      <div class="field-row"><label>Price ($) <b>*</b><input id="price" type="number" step="0.01" min="0" placeholder="0.00" required></label><label>Stock quantity<input id="stock" type="number" step="1" min="0" value="10"></label></div>
+      <label>Category<select id="productCategory"><option value="">Uncategorized</option></select></label>
+      <div class="tag-group"><strong>Tags</strong><div id="tagInputs" class="tag-inputs"></div></div>
+    </div>
+    <div id="nameInputs" class="inputs hidden"><label><span id="nameLabel">Name *</span><input id="nameInput" maxlength="255" type="text"></label></div>
+    <div class="modal-foot"><button type="button" id="cancel" class="secondary">Cancel</button><button type="submit" id="save" class="primary">Save changes</button></div>
+  </form>
+</dialog>
+<div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+</body>
+</html>

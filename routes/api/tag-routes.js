@@ -1,78 +1,44 @@
 const router = require('express').Router();
-const { Tag, Product, ProductTag } = require('../../models');
+const { Op } = require('sequelize');
+const { Tag, Product } = require('../../models');
+const { HttpError, asyncRoute } = require('../../utils/http');
+const v = require('../../utils/validation');
 
-// The `/api/tags` endpoint
+const includes = [{ model: Product }];
 
-router.get('/', async (req, res) => {
-  // find all tags
-  try {
-    const seedTags = await Tag.findAll({ include: [{ model: Product }] });
-    res.status(200).json(seedTags);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
+router.get('/', asyncRoute(async (req, res) => {
+  const query = v.list(req.query, ['id', 'tag_name']);
+  if (query.category_id !== undefined) throw new HttpError(400, 'category_id is only supported for products.');
+  const where = query.q ? { tag_name: { [Op.like]: v.like(query.q) } } : {};
+  const options = { where, include: includes, order: [[query.sort, query.order]] };
+  if (query.limit !== undefined) options.limit = query.limit;
+  if (query.offset !== undefined) options.offset = query.offset;
+  const [rows, count] = await Promise.all([Tag.findAll(options), Tag.count({ where })]);
+  res.set('X-Total-Count', String(count)).json(rows);
+}));
 
-router.get('/:id', async (req, res) => {
-  // find a single tag by its `id`
-  try {
-    const seedTag = await Tag.findByPk(req.params.id, { include: [{ model: Product }] });
+router.get('/:id', asyncRoute(async (req, res) => {
+  const row = await Tag.findByPk(v.id(req.params.id), { include: includes });
+  if (!row) throw new HttpError(404, 'Tag not found.', 'NOT_FOUND');
+  res.json(row);
+}));
 
-    if (!seedTag) {
-      res.status(404).json({ message: 'No tag found with that id!' });
-      return;
-    };
+router.post('/', asyncRoute(async (req, res) => {
+  const row = await Tag.create(v.named(req.body, 'tag_name'));
+  res.status(201).json(row);
+}));
 
-    res.status(200).json(seedTag);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
+router.put('/:id', asyncRoute(async (req, res) => {
+  const row = await Tag.findByPk(v.id(req.params.id));
+  if (!row) throw new HttpError(404, 'Tag not found.', 'NOT_FOUND');
+  await row.update(v.named(req.body, 'tag_name', true));
+  res.json(row);
+}));
 
-router.post('/', async (req, res) => {
-  // create a new tag
-  try {
-    const postTag = await Tag.create(req.body);
-    res.status(200).json(postTag);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-
-router.put('/:id', async (req, res) => {
-  // update a tag's name by its `id` value
-  try {
-    const putTag = await Tag.update({
-      id: req.params.id,
-      tag_name: req.body.tag_name
-    }, {
-      where: {
-        id: req.params.id
-      }
-    });
-    if (!putTag[0]) {
-      res.status(404).json({ message: "No tag found with that id!" });
-    }
-    res.status(200).json(putTag);
-  } catch (error) {
-    res.status(500).json(error);
-  }
-});
-
-router.delete('/:id', async (req, res) => {
-  // delete on tag by its `id` value
-  try {
-    const deleteTag = await Tag.destroy({ where: { id: req.params.id } });
-
-    if (!deleteTag) {
-      res.status(404).json({ message: 'No tag found with that id!' });
-      return;
-    }
-
-    res.status(200).json(deleteTag);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
+router.delete('/:id', asyncRoute(async (req, res) => {
+  const deleted = await Tag.destroy({ where: { id: v.id(req.params.id) } });
+  if (!deleted) throw new HttpError(404, 'Tag not found.', 'NOT_FOUND');
+  res.status(204).end();
+}));
 
 module.exports = router;
